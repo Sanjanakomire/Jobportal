@@ -15,6 +15,7 @@ const ApplyJob = () => {
 
   useEffect(() => {
     const fetchJob = async () => {
+      console.log('Fetching job with id:', id); // Add logging
       const data = jobs.filter(job => job._id === id);
       if (data.length !== 0) {
         setJobData(data[0]);

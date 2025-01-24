@@ -14,7 +14,9 @@ export const AppContextProvider = (props) => {
 
   // Function to fetch job data
   const fetchJobs = async () => {
+    console.log('Fetching jobs data'); // Add logging
     setJobs(jobsData);
+    console.log('Jobs data:', jobsData); // Add logging
   };
 
   useEffect(() => {
