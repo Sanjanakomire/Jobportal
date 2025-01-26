@@ -10,7 +10,11 @@ import { clerkWebhooks } from './controllers/webhooks.js';
 const app = express();
 
 // Connect to the database
-connectDB();
+connectDB().then(() => {
+  console.log('Database connected successfully');
+}).catch((err) => {
+  console.error('Database connection error:', err);
+});
 
 // Middlewares
 app.use(cors());
