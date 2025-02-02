@@ -1,6 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Quill from 'quill'
 import { JobCategories, JobLocations } from '../assets/assets';
+import { AppContext } from '../context/AppContext';
+import "quill/dist/quill.snow.css";
+import axios from 'axios';
+import { toast } from "react-toastify";
+import { data } from "react-router-dom";
+
 
 const AddJob = () => {
   const [title, setTitle] = useState('');
@@ -8,8 +14,35 @@ const AddJob = () => {
   const [category,setCategory] = useState('Programming');
   const [level,setLevel] = useState('Beginner level');
   const [salary,setSalary] = useState(0);
+ 
   const editorRef = useRef(null)
   const quillRef = useRef(null)
+  
+  const { backendUrl, companyToken } = useContext(AppContext)
+
+  const onSubmitHandler = async (e)=>{
+    e.preventDefault();
+    try {
+      const description = quillRef.current.root.innerHTML;
+
+      const {data} = await axios.post(backendUrl+'/api/company/post-job',{
+        title, description, location, salary, category, level
+      },{headers:{token:companyToken}})
+
+      if (data.success) {
+        toast.success(data.message);
+        setTitle("");
+        setSalary(0);
+        quillRef.current.root.innerHTML= "";
+        }
+    } catch (error) {
+      toast.error(error.message);
+    }
+
+  
+  }
+
+
   useEffect(()=>{
     //Initiate quill only once
     if(!quillRef.current && editorRef.current){
@@ -19,16 +52,12 @@ const AddJob = () => {
     }
   },[])
 
-  const onSubmitHandler = (e) => {
-    e.preventDefault();
-    // Handle form submission logic here
-  }
   return (
     <form onSubmit={onSubmitHandler} className="container p-4 flex flex-col w-full items-center gap-4">
       {/*Job Title*/}
       <div className="w-full max-w-lg">
         <label className='block mb-2 text-sm font-medium text-gray-700'>Job Title </label>
-          <input  className="w-full px-3 py-2 border-2 border-gray-300 rounded" type='text' placeholder='Type here' onChange={e=> setTitle(e.target.value )} value={title} required/>
+          <input  className="w-full px-3 py-2 border-2 border-gray-300 rounded" type='text' placeholder='Type here' onChange={(e)=> setTitle(e.target.value )} value={title} required/>
       </div>
       {/*job desc */}
       <div className="w-full max-w-lg ">
