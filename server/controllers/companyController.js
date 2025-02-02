@@ -1,9 +1,12 @@
-import Company from "../models/Company.js";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
-import generateToken from "../utils/generateToken.js";
+import mongoose from "mongoose"; // Import mongoose
+import Company from "../models/Company.js";
 import Job from "../models/Job.js";
 import JobApplication from "../models/JobApplication.js";
+import User from "../models/User.js"; // Import User model
+import generateToken from "../utils/generateToken.js";
+
 // Register a new company
 export const registerCompany = async (req, res) => {
   const { name, email, password } = req.body;
@@ -187,4 +190,44 @@ export const changeVisibility = async (req, res) => {
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
+};
+
+// Apply for a job
+export const applyForJob = async (req, res) => {
+  try {
+    const { userId, jobId } = req.body;
+
+    // Convert userId to ObjectId
+    const userObjectId = mongoose.Types.ObjectId(userId);
+
+    // Check if user exists
+    const user = await User.findById(userObjectId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User Not Found' });
+    }
+
+    // Create a new job application
+    const jobApplication = new JobApplication({
+      userId: userObjectId,
+      jobId,
+      // ...other fields
+    });
+
+    await jobApplication.save();
+    res.status(201).json({ success: true, message: 'Job Application Submitted' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export default {
+  registerCompany,
+  loginCompany,
+  getCompanyData,
+  postJob,
+  getCompanyJobApplicants,
+  getCompanyPostedJobs,
+  changeJobApplicationsStatus,
+  changeVisibility,
+  applyForJob, // Export applyForJob
 };
