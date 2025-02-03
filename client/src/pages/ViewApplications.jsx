@@ -1,9 +1,9 @@
-import React,{ useContext,useEffect,useState} from 'react'
-import { assets, viewApplicationsPageData } from '../assets/assets'
-import { AppContext } from '../context/AppContext'
 import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { assets } from '../assets/assets';
 import Loading from '../components/Loading';
+import { AppContext } from '../context/AppContext';
 const ViewApplications = () => {
  
     const {backendUrl, companyToken} = useContext(AppContext);
@@ -42,7 +42,7 @@ const ViewApplications = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message); onClick={}
+      toast.error(error.message); 
     }
   }
 
@@ -79,8 +79,8 @@ const ViewApplications = () => {
             <td className='py-2 px-4 border-b text-center max-sm:hidden'>{applicant.jobId.Title}</td>
             <td className='py-2 px-4 border-b text-center max-sm:hidden'>{applicant.jobId.location}</td>
             <td className='py-2 px-4 border-b'>
-            
-              <a href={applicant.userId.resume} target='_blank' className='bg-blue-50 px-3 text-blue-400 py-1 rounded inline-flex gap-2 items-center' href= "{applicant.userId.resume}" target='_blank'>Resume <img src={assets.resume_download_icon} alt='' />
+              <a href={applicant.userId.resume} target='_blank' className='bg-blue-50 px-3 text-blue-400 py-1 rounded inline-flex gap-2 items-center'>
+                Resume <img src={assets.resume_download_icon} alt='' />
               </a>
             </td>
             <td className='py-2 px-4 border-b relative'>
